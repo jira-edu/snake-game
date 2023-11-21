@@ -11,7 +11,7 @@
 #define OLED_RESET            4 // Reset pin # (or -1 if sharing Arduino reset pin)
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-const byte buttonPins[] = {2, 3, 5, 4}; // LEFT, UP, RIGHT, DOWN
+const byte buttonPins[] = {2, 3, 4, 5}; // LEFT, UP, RIGHT, DOWN
 
 typedef enum {
   START,
@@ -45,24 +45,55 @@ int8_t fruit[2];
 
 
 bool buttonPress() {
-  for (byte i = 0; i < 4; i++) {
-    byte buttonPin = buttonPins[i];
-    if (digitalRead(buttonPin) == LOW) {
-      return true;
-    }
+  // for (byte i = 0; i < 4; i++) {
+  //   byte buttonPin = buttonPins[i];
+  //   if (digitalRead(buttonPin) == LOW) {
+  //     return true;
+  //   }
+  // }
+
+  if (digitalRead(buttonPins[0]) == HIGH) {
+    return true;
+  }
+  if (digitalRead(buttonPins[1]) == LOW) {
+    return true;
+  }
+  if (digitalRead(buttonPins[2]) == HIGH) {
+    return true;
+  }
+  if (digitalRead(buttonPins[3]) == LOW) {
+    return true;
   }
   return false;
 }
 
 void readDirection() {
-  for (byte i = 0; i < 4; i++) {
-    byte buttonPin = buttonPins[i];
-    if (digitalRead(buttonPin) == LOW && i != ((int)dir + 2) % 4) {
-      newDir = (Direction)i;
+  // for (byte i = 0; i < 4; i++) {
+  //   byte buttonPin = buttonPins[i];
+  //   if (digitalRead(buttonPin) == LOW && i != ((int)dir + 2) % 4) {
+  //     newDir = (Direction)i;
+  //     return;
+  //   }
+  // }
+
+  if (digitalRead(buttonPins[0]) == HIGH && 0 != ((int)dir + 2) % 4) {
+      newDir = (Direction)0;
       return;
-    }
+  }
+  if (digitalRead(buttonPins[1]) == LOW && 1 != ((int)dir + 2) % 4) {
+      newDir = (Direction)1;
+      return;
+  }
+  if (digitalRead(buttonPins[2]) == HIGH && 2 != ((int)dir + 2) % 4) {
+      newDir = (Direction)2;
+      return;
+  }
+  if (digitalRead(buttonPins[3]) == LOW && 3 != ((int)dir + 2) % 4) {
+      newDir = (Direction)3;
+      return;
   }
 }
+
 
 bool collisionCheck(int8_t x, int8_t y) {
   for(int i = 1; i < snake_length; i++) {
@@ -198,9 +229,14 @@ void setup() {
     for(;;);
   }
 
-  for (byte i = 0; i < 4; i++) {
-    pinMode(buttonPins[i], INPUT_PULLUP);
-  }
+  // for (byte i = 0; i < 4; i++) {
+  //   pinMode(buttonPins[i], INPUT_PULLUP);
+  // }
+
+  pinMode(buttonPins[0], INPUT);
+  pinMode(buttonPins[1], INPUT_PULLUP);
+  pinMode(buttonPins[2], INPUT);
+  pinMode(buttonPins[3], INPUT_PULLUP);
 
   randomSeed(analogRead(A0));
 
